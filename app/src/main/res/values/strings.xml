@@ -1,3 +1,27 @@
 <resources>
-    <string name="app_name">ConsumerApi</string>
+    <string name="app_name">RotaFácil</string>
+    <string name="login">Entrar</string>
+    <string name="email">Email</string>
+    <string name="password">Senha</string>
+    <string name="register">Cadastrar</string>
+    <string name="home">Início</string>
+    <string name="routes">Rotas</string>
+    <string name="trips">Viagens</string>
+    <string name="profile">Perfil</string>
+    <string name="logout">Sair</string>
+    <string name="loading">Carregando...</string>
+    <string name="error">Erro</string>
+    <string name="retry">Tentar novamente</string>
+    <string name="cancel">Cancelar</string>
+    <string name="confirm">Confirmar</string>
+    <string name="save">Salvar</string>
+    <string name="delete">Excluir</string>
+    <string name="edit">Editar</string>
+    <string name="next_trip">Próxima Viagem</string>
+    <string name="track_live">Acompanhar ao Vivo</string>
+    <string name="start_trip">Iniciar Viagem</string>
+    <string name="end_trip">Finalizar Viagem</string>
+    <string name="report_incident">Reportar Incidente</string>
+    <string name="check_in">Check-in</string>
+    <string name="passengers">Passageiros</string>
 </resources>
