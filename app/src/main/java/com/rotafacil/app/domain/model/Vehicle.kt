@@ -7,5 +7,7 @@ data class Vehicle(
     val capacidade: Int,
     val ano: Int,
     val isAtivo: Boolean = true,
-    val motoristaId: String? = null
+    val motoristaId: String? = null,
+    val statusManutencao: String = "Disponível",
+    val adaptadoPcd: Boolean = false
 ) 

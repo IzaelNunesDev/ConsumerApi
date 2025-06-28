@@ -1,8 +1,6 @@
 package com.rotafacil.app.data.remote
 
 import com.rotafacil.app.data.remote.dto.*
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
 import retrofit2.http.*
 
 interface ApiService {
@@ -29,15 +27,41 @@ interface ApiService {
     @GET("api/v1/rotas/ativas")
     suspend fun getActiveRoutes(): List<RouteDto>
     
+    @GET("api/v1/rotas/buscar/texto/")
+    suspend fun searchRoutesByText(@Query("texto") texto: String): List<RouteDto>
+    
+    @GET("api/v1/rotas/buscar/")
+    suspend fun filterRoutes(
+        @Query("turno") turno: String? = null,
+        @Query("ativa") ativa: Boolean? = null
+    ): List<RouteDto>
+    
     @GET("api/v1/rotas/{id}")
     suspend fun getRouteById(@Path("id") id: String): RouteDto
     
     @GET("api/v1/rotas/motorista/{motoristaId}")
     suspend fun getRoutesByDriver(@Path("motoristaId") driverId: String): List<RouteDto>
     
+    // Routes CRUD
+    @POST("api/v1/rotas/")
+    suspend fun createRoute(@Body route: RouteDto): RouteDto
+    
+    @PUT("api/v1/rotas/{id}")
+    suspend fun updateRoute(@Path("id") id: String, @Body route: RouteDto): RouteDto
+    
+    @DELETE("api/v1/rotas/{id}")
+    suspend fun deleteRoute(@Path("id") id: String)
+    
     // Trips
     @GET("api/v1/viagens/aluno/{alunoId}")
     suspend fun getTripsByStudent(@Path("alunoId") studentId: String): List<TripDto>
+    
+    @GET("api/v1/viagens/buscar/")
+    suspend fun filterTrips(
+        @Query("status") status: String? = null,
+        @Query("data_inicio") dataInicio: String? = null,
+        @Query("data_fim") dataFim: String? = null
+    ): List<TripDto>
     
     @GET("api/v1/viagens/motorista/{motoristaId}")
     suspend fun getTripsByDriver(
@@ -65,8 +89,23 @@ interface ApiService {
     suspend fun markAttendance(@Body attendance: AttendanceRequestDto): AttendanceDto
     
     // Vehicles
+    @GET("api/v1/veiculos/")
+    suspend fun getVehicles(): List<VehicleDto>
+    
     @GET("api/v1/veiculos/{id}")
     suspend fun getVehicle(@Path("id") id: String): VehicleDto
+    
+    @GET("api/v1/veiculos/estatisticas/")
+    suspend fun getVehicleStats(): List<VehicleStatsDto>
+    
+    @GET("api/v1/veiculos/buscar/texto/")
+    suspend fun searchVehiclesByText(@Query("texto") texto: String): List<VehicleDto>
+    
+    @GET("api/v1/veiculos/buscar/")
+    suspend fun filterVehicles(
+        @Query("status_manutencao") statusManutencao: String? = null,
+        @Query("adaptado_pcd") adaptadoPcd: Boolean? = null
+    ): List<VehicleDto>
     
     // FCM Token
     @POST("api/v1/alunos/{id}/fcm-token")
@@ -74,19 +113,11 @@ interface ApiService {
         @Path("id") studentId: String,
         @Body token: Map<String, String>
     ): Unit
-}
-
-@JsonClass(generateAdapter = true)
-data class VehicleDto(
-    val id: String,
-    val placa: String,
-    val modelo: String,
-    @Json(name = "capacidade_passageiros")
-    val capacidade: Int,
-    @Json(name = "ano_fabricacao")
-    val ano: Int,
-    @Json(name = "status_manutencao")
-    val status: String = "Disponível",
-    @Json(name = "adaptado_pcd")
-    val adaptadoPcd: Boolean = false
-) 
+    
+    // Trips Statistics
+    @GET("api/v1/viagens/estatisticas/periodo/")
+    suspend fun getTripStatsByPeriod(
+        @Query("data_inicio") dataInicio: String? = null,
+        @Query("data_fim") dataFim: String? = null
+    ): TripStatsDto
+} 

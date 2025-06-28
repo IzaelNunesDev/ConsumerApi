@@ -19,4 +19,8 @@ class GetTripsUseCase @Inject constructor(
     suspend fun getTripById(id: String): Result<Trip> {
         return tripRepository.getTripById(id)
     }
+    
+    suspend fun filter(status: String?, dataInicio: String?, dataFim: String?): Result<List<Trip>> {
+        return tripRepository.filterTrips(status, dataInicio, dataFim)
+    }
 } 

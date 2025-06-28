@@ -15,4 +15,12 @@ class GetActiveRoutesUseCase @Inject constructor(
     fun observe(): Flow<List<Route>> {
         return routeRepository.observeActiveRoutes()
     }
+
+    suspend fun search(text: String): Result<List<Route>> {
+        return routeRepository.searchRoutesByText(text)
+    }
+
+    suspend fun filter(turno: String?, ativa: Boolean?): Result<List<Route>> {
+        return routeRepository.filterRoutes(turno, ativa)
+    }
 } 

@@ -12,7 +12,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.rotafacil.app.ui.screens.HomeScreen
+import com.rotafacil.app.ui.screens.MainScreen
 import com.rotafacil.app.ui.screens.login.LoginScreen
 import com.rotafacil.app.ui.theme.RotaFacilTheme
 import com.rotafacil.app.ui.viewmodel.AuthViewModel
@@ -48,7 +48,7 @@ fun RotaFacilApp(
     val isLoggedIn by viewModel.isLoggedIn.collectAsState()
     
     if (isLoggedIn) {
-        HomeScreen(
+        MainScreen(
             onLogout = { viewModel.logout() }
         )
     } else {

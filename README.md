@@ -79,7 +79,7 @@ set JAVA_HOME=C:\Program Files\Java\jdk-XX
 
 ```bash
 # Compilar debug
-.\gradlew assembleDebug
+.\gradlew assembleDebug --info
 
 # Ou build completo
 .\gradlew build
@@ -221,7 +221,7 @@ python test_integration.py
 .\gradlew clean
 
 # Compilar debug
-.\gradlew assembleDebug
+.\gradlew assembleDebug --info
 
 # Executar testes
 .\gradlew test
