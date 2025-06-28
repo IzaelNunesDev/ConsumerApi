@@ -16,22 +16,60 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = PrimaryBlueDark,
+    onPrimary = OnPrimaryDark,
+    primaryContainer = PrimaryBlueVariantDark,
+    onPrimaryContainer = OnPrimaryDark,
+    secondary = SecondaryGreenDark,
+    onSecondary = OnSecondaryDark,
+    secondaryContainer = SecondaryGreenVariantDark,
+    onSecondaryContainer = OnSecondaryDark,
+    tertiary = AccentOrangeDark,
+    onTertiary = OnPrimaryDark,
+    tertiaryContainer = AccentOrangeVariantDark,
+    onTertiaryContainer = OnPrimaryDark,
+    background = BackgroundDark,
+    onBackground = OnSurfaceDark,
+    surface = SurfaceDark,
+    onSurface = OnSurfaceDark,
+    surfaceVariant = SurfaceVariantDark,
+    onSurfaceVariant = OnSurfaceVariantDark,
+    error = ErrorRed,
+    onError = OnPrimaryLight,
+    errorContainer = ErrorRed.copy(alpha = 0.2f),
+    onErrorContainer = OnPrimaryLight
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = PrimaryBlue,
+    onPrimary = OnPrimaryLight,
+    primaryContainer = PrimaryBlueVariant,
+    onPrimaryContainer = OnPrimaryLight,
+    secondary = SecondaryGreen,
+    onSecondary = OnSecondaryLight,
+    secondaryContainer = SecondaryGreenVariant,
+    onSecondaryContainer = OnSecondaryLight,
+    tertiary = AccentOrange,
+    onTertiary = OnPrimaryLight,
+    tertiaryContainer = AccentOrangeVariant,
+    onTertiaryContainer = OnPrimaryLight,
+    background = BackgroundLight,
+    onBackground = OnSurfaceLight,
+    surface = SurfaceLight,
+    onSurface = OnSurfaceLight,
+    surfaceVariant = SurfaceVariantLight,
+    onSurfaceVariant = OnSurfaceVariantLight,
+    error = ErrorRed,
+    onError = OnPrimaryLight,
+    errorContainer = ErrorRed.copy(alpha = 0.1f),
+    onErrorContainer = ErrorRed
 )
 
 @Composable
 fun RotaFacilTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false, // Desabilitado para usar nossas cores customizadas
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -47,8 +85,9 @@ fun RotaFacilTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            // Status bar transparente para um visual mais moderno
+            window.statusBarColor = colorScheme.background.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
 

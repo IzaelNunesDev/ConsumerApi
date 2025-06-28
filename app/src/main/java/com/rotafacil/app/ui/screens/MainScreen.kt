@@ -1,12 +1,14 @@
 package com.rotafacil.app.ui.screens
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
@@ -25,18 +27,19 @@ import com.rotafacil.app.ui.screens.stats.StatsScreen
 import com.rotafacil.app.ui.screens.routes.RotaFormScreen
 
 sealed class Screen(val route: String, val title: String, val icon: ImageVector) {
-    object Rotas : Screen("rotas", "Rotas", Icons.Default.List)
-    object Viagens : Screen("viagens", "Viagens", Icons.Default.Home)
-    object Veiculos : Screen("veiculos", "Veículos", Icons.Default.Star)
+    object Rotas : Screen("rotas", "Rotas", Icons.Default.Route)
+    object Viagens : Screen("viagens", "Viagens", Icons.Default.DirectionsBus)
+    object Veiculos : Screen("veiculos", "Veículos", Icons.Default.LocalShipping)
     object Perfil : Screen("perfil", "Perfil", Icons.Default.Person)
-    object Stats : Screen("stats", "Estatísticas", Icons.Default.Info)
+    object Stats : Screen("stats", "Estatísticas", Icons.Default.Analytics)
 }
 
 // Rotas de detalhes
 sealed class DetailScreen(val route: String) {
     object RotaDetail : DetailScreen("rota_detail/{rotaId}")
     object ViagemDetail : DetailScreen("viagem_detail/{viagemId}")
-    object RotaForm : DetailScreen("rota_form/{rotaId?}")
+    object RotaForm : DetailScreen("rota_form")
+    object RotaFormEdit : DetailScreen("rota_form/{rotaId}")
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,7 +51,10 @@ fun MainScreen(
     
     Scaffold(
         bottomBar = {
-            NavigationBar {
+            NavigationBar(
+                containerColor = MaterialTheme.colorScheme.surface,
+                tonalElevation = 8.dp
+            ) {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
                 
@@ -62,7 +68,13 @@ fun MainScreen(
                 
                 screens.forEach { screen ->
                     NavigationBarItem(
-                        icon = { Icon(screen.icon, contentDescription = screen.title) },
+                        icon = { 
+                            Icon(
+                                screen.icon, 
+                                contentDescription = screen.title,
+                                modifier = Modifier.size(24.dp)
+                            ) 
+                        },
                         label = { Text(screen.title) },
                         selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                         onClick = {
@@ -73,7 +85,14 @@ fun MainScreen(
                                 launchSingleTop = true
                                 restoreState = true
                             }
-                        }
+                        },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = MaterialTheme.colorScheme.primary,
+                            selectedTextColor = MaterialTheme.colorScheme.primary,
+                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            indicatorColor = MaterialTheme.colorScheme.primaryContainer
+                        )
                     )
                 }
             }
@@ -90,10 +109,10 @@ fun MainScreen(
                         navController.navigate("rota_detail/$rotaId")
                     },
                     onAddRota = {
-                        navController.navigate("rota_form")
+                        navController.navigate(DetailScreen.RotaForm.route)
                     },
                     onEditRota = { rotaId ->
-                        navController.navigate("rota_form/$rotaId")
+                        navController.navigate(DetailScreen.RotaFormEdit.route.replace("{rotaId}", rotaId))
                     },
                     onDeleteRota = { rotaId ->
                         // TODO: Implementar diálogo de confirmação
@@ -143,13 +162,16 @@ fun MainScreen(
             }
             
             // Formulário de rotas
+            composable(route = DetailScreen.RotaForm.route) {
+                RotaFormScreen(
+                    rotaId = null,
+                    navController = navController
+                )
+            }
+            
             composable(
-                route = DetailScreen.RotaForm.route,
-                arguments = listOf(navArgument("rotaId") { 
-                    type = NavType.StringType
-                    nullable = true
-                    defaultValue = null
-                })
+                route = DetailScreen.RotaFormEdit.route,
+                arguments = listOf(navArgument("rotaId") { type = NavType.StringType })
             ) { backStackEntry ->
                 val rotaId = backStackEntry.arguments?.getString("rotaId")
                 RotaFormScreen(
