@@ -46,11 +46,11 @@ fun RotaFormScreen(
                     }
                 },
                 actions = {
-                    TextButton(
+                    Button(
                         onClick = {
                             viewModel.saveRoute()
                         },
-                        enabled = formState.isValid
+                        enabled = (formState as? RouteFormState.Success)?.form?.isValid == true
                     ) {
                         Text("Salvar")
                     }

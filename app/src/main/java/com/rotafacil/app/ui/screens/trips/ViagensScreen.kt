@@ -9,15 +9,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.rotafacil.app.data.local.DataStoreManager
 import com.rotafacil.app.domain.model.Trip
 import com.rotafacil.app.ui.viewmodel.TripState
 import com.rotafacil.app.ui.viewmodel.TripViewModel
-import kotlinx.coroutines.flow.collectLatest
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -25,13 +22,9 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun ViagensScreen(
     onViagemClick: (String) -> Unit = {},
-    viewModel: TripViewModel = hiltViewModel(),
-    dataStoreManager: DataStoreManager = androidx.hilt.navigation.compose.hiltViewModel()
+    viewModel: TripViewModel = hiltViewModel()
 ) {
     val tripState by viewModel.tripState.collectAsState()
-    val context = LocalContext.current
-    val dataStore = remember { DataStoreManager(context) }
-    var studentId by remember { mutableStateOf<String?>(null) }
     
     var selectedStatus by remember { mutableStateOf<String?>(null) }
     var startDate by remember { mutableStateOf<LocalDate?>(null) }
@@ -39,22 +32,12 @@ fun ViagensScreen(
     var showStartDatePicker by remember { mutableStateOf(false) }
     var showEndDatePicker by remember { mutableStateOf(false) }
 
-    // Observar o ID do usuário logado
-    LaunchedEffect(Unit) {
-        dataStore.userId.collectLatest { id ->
-            if (id != null) {
-                studentId = id
-                viewModel.loadTrips(id)
-            }
-        }
-    }
-
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Minhas Viagens") },
                 actions = {
-                    IconButton(onClick = { studentId?.let { viewModel.refreshTrips(it) } }) {
+                    IconButton(onClick = { viewModel.refreshTrips() }) {
                         Icon(Icons.Default.Refresh, contentDescription = "Atualizar")
                     }
                 }
@@ -147,7 +130,7 @@ fun ViagensScreen(
                                         selectedStatus = null
                                         startDate = null
                                         endDate = null
-                                        studentId?.let { viewModel.loadTrips(it) }
+                                        viewModel.loadTrips()
                                     },
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
@@ -186,11 +169,18 @@ fun ViagensScreen(
                     ) {
                         Text(
                             text = (tripState as TripState.Error).message,
-                            color = MaterialTheme.colorScheme.error
+                            color = MaterialTheme.colorScheme.error,
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
                         )
-                        Button(onClick = { studentId?.let { viewModel.refreshTrips(it) } }) {
+                        Button(onClick = { viewModel.refreshTrips() }) {
                             Text("Tentar Novamente")
                         }
+                        Text(
+                            text = "Se o problema persistir, verifique sua conexão com a internet ou tente novamente mais tarde.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                        )
                     }
                 }
             }
@@ -202,10 +192,17 @@ fun ViagensScreen(
     
     // Date Pickers
     if (showStartDatePicker) {
+        val startDatePickerState = rememberDatePickerState()
         DatePickerDialog(
             onDismissRequest = { showStartDatePicker = false },
             confirmButton = {
                 TextButton(onClick = {
+                    startDatePickerState.selectedDateMillis?.let { millis ->
+                        startDate = java.time.Instant.ofEpochMilli(millis)
+                            .atZone(java.time.ZoneId.systemDefault())
+                            .toLocalDate()
+                        applyFilters(viewModel, selectedStatus, startDate, endDate)
+                    }
                     showStartDatePicker = false
                 }) {
                     Text("OK")
@@ -218,17 +215,24 @@ fun ViagensScreen(
             }
         ) {
             DatePicker(
-                state = rememberDatePickerState(),
+                state = startDatePickerState,
                 title = { Text("Selecionar Data Início") }
             )
         }
     }
     
     if (showEndDatePicker) {
+        val endDatePickerState = rememberDatePickerState()
         DatePickerDialog(
             onDismissRequest = { showEndDatePicker = false },
             confirmButton = {
                 TextButton(onClick = {
+                    endDatePickerState.selectedDateMillis?.let { millis ->
+                        endDate = java.time.Instant.ofEpochMilli(millis)
+                            .atZone(java.time.ZoneId.systemDefault())
+                            .toLocalDate()
+                        applyFilters(viewModel, selectedStatus, startDate, endDate)
+                    }
                     showEndDatePicker = false
                 }) {
                     Text("OK")
@@ -241,7 +245,7 @@ fun ViagensScreen(
             }
         ) {
             DatePicker(
-                state = rememberDatePickerState(),
+                state = endDatePickerState,
                 title = { Text("Selecionar Data Fim") }
             )
         }
@@ -303,25 +307,21 @@ fun TripCard(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Data: ${trip.data}",
+                text = "Data: ${trip.dataInicio.toLocalDate()}",
                 style = MaterialTheme.typography.bodyMedium
             )
             Text(
                 text = "Status: ${trip.status}",
                 style = MaterialTheme.typography.bodyMedium
             )
-            if (trip.rota != null) {
-                Text(
-                    text = "Rota: ${trip.rota.nome}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-            if (trip.motorista != null) {
-                Text(
-                    text = "Motorista: ${trip.motorista.nome}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
+            Text(
+                text = "Rota ID: ${trip.rotaId}",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = "Motorista ID: ${trip.motoristaId}",
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
     }
 } 

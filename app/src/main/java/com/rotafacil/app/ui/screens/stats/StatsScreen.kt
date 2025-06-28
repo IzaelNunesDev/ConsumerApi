@@ -108,31 +108,9 @@ fun StatsScreen(
                                 
                                 Spacer(modifier = Modifier.height(8.dp))
                                 
-                                OutlinedButton(
-                                    onClick = {
-                                        val dataInicio = startDate?.toString()
-                                        val dataFim = endDate?.toString()
-                                        viewModel.loadTripStatsByPeriod(dataInicio, dataFim)
-                                    },
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Text("Aplicar Filtro")
-                                }
+                                // Botão removido - funcionalidade não implementada
                             }
                         }
-                    }
-                    
-                    // Estatísticas de Viagens
-                    item {
-                        Text(
-                            text = "Estatísticas de Viagens",
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                    
-                    item {
-                        TripStatsCard(stats = stats.tripStats)
                     }
                     
                     // Estatísticas de Veículos
@@ -144,8 +122,12 @@ fun StatsScreen(
                         )
                     }
                     
-                    items(stats.vehicleStats) { vehicleStat ->
-                        VehicleStatsCard(vehicleStat = vehicleStat)
+                    item {
+                        VehicleStatsCard(
+                            totalVehicles = stats.totalVehicles,
+                            activeVehicles = stats.activeVehicles,
+                            maintenanceVehicles = stats.maintenanceVehicles
+                        )
                     }
                 }
             }
@@ -222,78 +204,11 @@ fun StatsScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TripStatsCard(stats: com.rotafacil.app.data.remote.dto.TripStatsDto) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Text(
-                text = "Resumo Geral",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column {
-                    Text("Total Viagens", style = MaterialTheme.typography.bodySmall)
-                    Text(
-                        text = "${stats.totalViagens}",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-                Column {
-                    Text("Concluídas", style = MaterialTheme.typography.bodySmall)
-                    Text(
-                        text = "${stats.viagensConcluidas}",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
-                Column {
-                    Text("Canceladas", style = MaterialTheme.typography.bodySmall)
-                    Text(
-                        text = "${stats.viagensCanceladas}",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.error
-                    )
-                }
-            }
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            Text(
-                text = "Taxa de Conclusão: ${String.format("%.1f", stats.taxaConclusao * 100)}%",
-                style = MaterialTheme.typography.bodyLarge
-            )
-            Text(
-                text = "Alunos Transportados: ${stats.totalAlunosTransportados}",
-                style = MaterialTheme.typography.bodyLarge
-            )
-            Text(
-                text = "KM Percorridos: ${String.format("%.1f", stats.kmTotalPercorrido)} km",
-                style = MaterialTheme.typography.bodyLarge
-            )
-            if (stats.tempoMedioViagem != null) {
-                Text(
-                    text = "Tempo Médio: ${stats.tempoMedioViagem}",
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun VehicleStatsCard(vehicleStat: com.rotafacil.app.data.remote.dto.VehicleStatsDto) {
+fun VehicleStatsCard(
+    totalVehicles: Int,
+    activeVehicles: Int,
+    maintenanceVehicles: Int
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -302,52 +217,20 @@ fun VehicleStatsCard(vehicleStat: com.rotafacil.app.data.remote.dto.VehicleStats
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = "${vehicleStat.modelo} - ${vehicleStat.placa}",
+                text = "Total de Veículos: $totalVehicles",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(8.dp))
             
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column {
-                    Text("Total Viagens", style = MaterialTheme.typography.bodySmall)
-                    Text(
-                        text = "${vehicleStat.totalViagens}",
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
-                Column {
-                    Text("Concluídas", style = MaterialTheme.typography.bodySmall)
-                    Text(
-                        text = "${vehicleStat.viagensConcluidas}",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
-                Column {
-                    Text("Taxa", style = MaterialTheme.typography.bodySmall)
-                    Text(
-                        text = "${String.format("%.1f", vehicleStat.taxaConclusao * 100)}%",
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
-            }
-            
-            Spacer(modifier = Modifier.height(8.dp))
-            
             Text(
-                text = "KM Percorridos: ${String.format("%.1f", vehicleStat.kmPercorridos)} km",
+                text = "Veículos Ativos: $activeVehicles",
                 style = MaterialTheme.typography.bodyMedium
             )
-            if (vehicleStat.tempoMedioViagem != null) {
-                Text(
-                    text = "Tempo Médio: ${vehicleStat.tempoMedioViagem}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
+            Text(
+                text = "Veículos em Manutenção: $maintenanceVehicles",
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
     }
 } 

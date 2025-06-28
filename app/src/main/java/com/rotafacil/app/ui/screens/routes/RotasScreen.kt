@@ -201,12 +201,10 @@ fun RouteCard(
                         text = "Paradas: ${route.pontosDeParada.size}",
                         style = MaterialTheme.typography.bodyMedium
                     )
-                    if (route.motorista != null) {
-                        Text(
-                            text = "Motorista: ${route.motorista.nome}",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
+                    Text(
+                        text = "Status: ${if (route.isAtiva) "Ativa" else "Inativa"}",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 }
                 
                 // Botões de ação

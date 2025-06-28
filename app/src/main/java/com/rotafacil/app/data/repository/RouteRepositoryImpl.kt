@@ -1,7 +1,8 @@
 package com.rotafacil.app.data.repository
 
 import com.rotafacil.app.data.remote.ApiService
-import com.rotafacil.app.data.remote.mapper.toRoute
+import com.rotafacil.app.data.remote.mapper.toDomain
+import com.rotafacil.app.data.remote.mapper.toDto
 import com.rotafacil.app.domain.model.Route
 import com.rotafacil.app.domain.repository.RouteRepository
 import kotlinx.coroutines.flow.Flow
@@ -14,7 +15,7 @@ class RouteRepositoryImpl @Inject constructor(
     
     override suspend fun getActiveRoutes(): Result<List<Route>> {
         return try {
-            val routes = apiService.getActiveRoutes().map { it.toRoute() }
+            val routes = apiService.getActiveRoutes().map { it.toDomain() }
             Result.success(routes)
         } catch (e: Exception) {
             Result.failure(e)
@@ -23,7 +24,7 @@ class RouteRepositoryImpl @Inject constructor(
     
     override suspend fun getRouteById(id: String): Result<Route> {
         return try {
-            val route = apiService.getRouteById(id).toRoute()
+            val route = apiService.getRouteById(id).toDomain()
             Result.success(route)
         } catch (e: Exception) {
             Result.failure(e)
@@ -32,7 +33,7 @@ class RouteRepositoryImpl @Inject constructor(
     
     override suspend fun getRoutesByDriver(driverId: String): Result<List<Route>> {
         return try {
-            val routes = apiService.getRoutesByDriver(driverId).map { it.toRoute() }
+            val routes = apiService.getRoutesByDriver(driverId).map { it.toDomain() }
             Result.success(routes)
         } catch (e: Exception) {
             Result.failure(e)
@@ -55,7 +56,7 @@ class RouteRepositoryImpl @Inject constructor(
 
     override suspend fun searchRoutesByText(text: String): Result<List<Route>> {
         return try {
-            val routes = apiService.searchRoutesByText(text).map { it.toRoute() }
+            val routes = apiService.searchRoutesByText(text).map { it.toDomain() }
             Result.success(routes)
         } catch (e: Exception) {
             Result.failure(e)
@@ -65,7 +66,7 @@ class RouteRepositoryImpl @Inject constructor(
     override suspend fun filterRoutes(turno: String?, ativa: Boolean?): Result<List<Route>> {
         return try {
             val response = apiService.filterRoutes(turno, ativa)
-            val routes = response.map { it.toRoute() }
+            val routes = response.map { it.toDomain() }
             Result.success(routes)
         } catch (e: Exception) {
             Result.failure(e)
@@ -74,9 +75,9 @@ class RouteRepositoryImpl @Inject constructor(
     
     override suspend fun createRoute(route: Route): Result<Route> {
         return try {
-            val routeDto = route.toRouteDto()
+            val routeDto = route.toDto()
             val response = apiService.createRoute(routeDto)
-            val createdRoute = response.toRoute()
+            val createdRoute = response.toDomain()
             Result.success(createdRoute)
         } catch (e: Exception) {
             Result.failure(e)
@@ -85,9 +86,9 @@ class RouteRepositoryImpl @Inject constructor(
     
     override suspend fun updateRoute(route: Route): Result<Route> {
         return try {
-            val routeDto = route.toRouteDto()
+            val routeDto = route.toDto()
             val response = apiService.updateRoute(route.id, routeDto)
-            val updatedRoute = response.toRoute()
+            val updatedRoute = response.toDomain()
             Result.success(updatedRoute)
         } catch (e: Exception) {
             Result.failure(e)

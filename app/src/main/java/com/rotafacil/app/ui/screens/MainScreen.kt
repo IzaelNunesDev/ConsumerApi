@@ -25,11 +25,11 @@ import com.rotafacil.app.ui.screens.stats.StatsScreen
 import com.rotafacil.app.ui.screens.routes.RotaFormScreen
 
 sealed class Screen(val route: String, val title: String, val icon: ImageVector) {
-    object Rotas : Screen("rotas", "Rotas", Icons.Default.Route)
-    object Viagens : Screen("viagens", "Viagens", Icons.Default.DirectionsBus)
-    object Veiculos : Screen("veiculos", "Veículos", Icons.Default.DirectionsCar)
+    object Rotas : Screen("rotas", "Rotas", Icons.Default.List)
+    object Viagens : Screen("viagens", "Viagens", Icons.Default.Home)
+    object Veiculos : Screen("veiculos", "Veículos", Icons.Default.Star)
     object Perfil : Screen("perfil", "Perfil", Icons.Default.Person)
-    object Stats : Screen("stats", "Estatísticas", Icons.Default.Analytics)
+    object Stats : Screen("stats", "Estatísticas", Icons.Default.Info)
 }
 
 // Rotas de detalhes
@@ -90,7 +90,7 @@ fun MainScreen(
                         navController.navigate("rota_detail/$rotaId")
                     },
                     onAddRota = {
-                        navController.navigate("rota_form/")
+                        navController.navigate("rota_form")
                     },
                     onEditRota = { rotaId ->
                         navController.navigate("rota_form/$rotaId")

@@ -90,7 +90,7 @@ fun PerfilScreen(
                             )
                             
                             Text(
-                                text = "Tipo: ${user.tipo}",
+                                text = "Tipo: ${user.role.name.lowercase()}",
                                 style = MaterialTheme.typography.bodyLarge,
                                 modifier = Modifier.padding(bottom = 8.dp)
                             )
@@ -103,7 +103,7 @@ fun PerfilScreen(
                                 )
                             }
                             
-                            if (user.matricula != null) {
+                            if (!user.matricula.isNullOrBlank()) {
                                 Text(
                                     text = "Matrícula: ${user.matricula}",
                                     style = MaterialTheme.typography.bodyLarge

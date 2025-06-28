@@ -17,5 +17,4 @@ interface TripRepository {
     fun observeTripLocation(tripId: String): Flow<TripLocation>
     suspend fun sendLocationUpdate(tripId: String, latitude: Double, longitude: Double)
     suspend fun filterTrips(status: String?, dataInicio: String?, dataFim: String?): Result<List<Trip>>
-    suspend fun searchTripsByText(texto: String): Result<List<Trip>>
 } 

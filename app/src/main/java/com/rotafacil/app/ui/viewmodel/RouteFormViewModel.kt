@@ -133,8 +133,7 @@ class RouteFormViewModel @Inject constructor(
                     isAtiva = currentForm.isAtiva,
                     pontosDeParada = currentForm.pontosDeParada,
                     motoristaId = currentForm.motoristaId,
-                    veiculoId = currentForm.veiculoId,
-                    motorista = null // Não incluímos o motorista no formulário
+                    veiculoId = currentForm.veiculoId
                 )
 
                 val result = if (currentForm.id.isBlank()) {

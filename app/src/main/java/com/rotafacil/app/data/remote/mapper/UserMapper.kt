@@ -16,7 +16,8 @@ fun UserDto.toDomain(): User {
             else -> UserRole.ALUNO
         },
         telefone = telefone,
-        endereco = endereco
+        endereco = endereco,
+        matricula = registration
     )
 }
 
@@ -31,6 +32,7 @@ fun User.toDto(): UserDto {
             UserRole.ADMIN -> "admin"
         },
         telefone = telefone,
-        endereco = endereco
+        endereco = endereco,
+        registration = matricula
     )
 } 

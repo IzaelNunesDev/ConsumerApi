@@ -6,7 +6,8 @@ data class User(
     val email: String,
     val role: UserRole,
     val telefone: String? = null,
-    val endereco: String? = null
+    val endereco: String? = null,
+    val matricula: String? = null
 )
 
 enum class UserRole {

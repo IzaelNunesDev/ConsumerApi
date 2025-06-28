@@ -12,7 +12,6 @@ interface RouteRepository {
     fun observeActiveRoutes(): Flow<List<Route>>
     suspend fun searchRoutesByText(text: String): Result<List<Route>>
     suspend fun filterRoutes(turno: String?, ativa: Boolean?): Result<List<Route>>
-    suspend fun searchRoutes(texto: String): Result<List<Route>>
     suspend fun createRoute(route: Route): Result<Route>
     suspend fun updateRoute(route: Route): Result<Route>
     suspend fun deleteRoute(routeId: String): Result<Unit>

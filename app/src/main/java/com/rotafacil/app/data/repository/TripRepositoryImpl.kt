@@ -97,14 +97,4 @@ class TripRepositoryImpl @Inject constructor(
             Result.failure(e)
         }
     }
-    
-    override suspend fun searchTripsByText(texto: String): Result<List<Trip>> {
-        return try {
-            val response = apiService.searchTripsByText(texto)
-            val trips = response.map { it.toTrip() }
-            Result.success(trips)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
 } 

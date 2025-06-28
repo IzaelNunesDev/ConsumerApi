@@ -73,22 +73,4 @@ class VehicleRepositoryImpl @Inject constructor(
             Result.failure(e)
         }
     }
-    
-    override suspend fun getVehicleStats(): Result<List<VehicleStatsDto>> {
-        return try {
-            val response = apiService.getVehicleStats()
-            Result.success(response)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-    
-    override suspend fun getTripStatsByPeriod(dataInicio: String?, dataFim: String?): Result<TripStatsDto> {
-        return try {
-            val response = apiService.getTripStatsByPeriod(dataInicio, dataFim)
-            Result.success(response)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
 } 
